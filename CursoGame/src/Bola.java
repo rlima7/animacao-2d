@@ -4,22 +4,58 @@ import javax.imageio.ImageIO;
 
 public class Bola {
 	private int posX, posY, raio, velX, velY;
-	private BufferedImage parada;
-	
+	// private BufferedImage parada;
+	private BufferedImage direita_baixo;
+	private BufferedImage direita_cima;
+	private BufferedImage esquerda_cima;
+	private BufferedImage esquerda_baixo;
+
 	public Bola() {
-		
+
 		try {
-			parada = ImageIO.read(getClass().getResource("imgs/parada.gif"));
+			// parada = ImageIO.read(getClass().getResource("imgs/parada.gif"));
+			direita_baixo = ImageIO.read(getClass().getResource("imgs/direita_baixo.gif"));
+			direita_cima = ImageIO.read(getClass().getResource("imgs/direita_cima.gif"));
+			esquerda_cima = ImageIO.read(getClass().getResource("imgs/esquerda_cima.gif"));
+			esquerda_baixo = ImageIO.read(getClass().getResource("imgs/esquerda_baixo.gif"));
+
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
+
+		// Combinar para mover a bola em diferentes pisições
 		posX = 200;
 		posY = 200;
 		raio = 50;
-		velX = 5;
-		velY = 5;
+		velX = 3;
+		velY = 3;
+
 	}
+
+	// Obter imagem
+	// ************************************************************************************
+
+	public BufferedImage obterImagem() { // Retorna objeto BufferedImage
+		if (velX < 0) { // mover-se para a esquerda
+			if (velY < 0) { // cima
+				return esquerda_cima;
+			} else { // baixo
+				return esquerda_baixo;
+			}
+
+		} else { // mover-se para a direita
+			if (velY < 0) { // cima
+				return direita_cima;
+
+			} else { // baixo
+				return direita_baixo;
+
+			}
+
+		}
+
+	}
+	// ************************************************************************************
 
 	public int getPosX() {
 		return posX;
@@ -60,15 +96,5 @@ public class Bola {
 	public void setVelY(int velY) {
 		this.velY = velY;
 	}
-
-	public BufferedImage getParada() {
-		return parada;
-	}
-
-	public void setParada(BufferedImage parada) {
-		this.parada = parada;
-	}
-	
-	
 
 }
