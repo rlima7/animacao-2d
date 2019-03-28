@@ -1,114 +1,152 @@
-
-// import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
-// import java.awt.Graphics2D;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.awt.image.BufferedImage;
 import javax.swing.JPanel;
 
-public class Game extends JPanel {
-
-	/*
-	 * A classe “Game” representará a tela, dentro da janela, onde o jogo ocorrerá.
-	 */
-
+public class Game extends JPanel{
+	// Esta classe representará a tela, dentro da janela, onde o jogo ocorrerá. 
+	
 	private Bola bola;
-
+	private BufferedImage imgAtual;
+	private boolean k_cima, k_baixo, k_esquerda, k_direita = false;
+	
 	public Game() {
+		
+		addKeyListener(new KeyListener() {
+			
+			@Override
+			public void keyTyped(KeyEvent e) {}
+			
+			@Override
+			public void keyReleased(KeyEvent e) {
+				switch (e.getKeyCode()) {
+				
+				case KeyEvent.VK_UP: k_cima = false; break;
+				case KeyEvent.VK_DOWN: k_baixo = false; break;
+				case KeyEvent.VK_LEFT: k_esquerda = false; break;
+				case KeyEvent.VK_RIGHT: k_direita = false; break;
+				
+				}
+			}
+			
+			@Override
+			public void keyPressed(KeyEvent e) {
+				switch (e.getKeyCode()) {
+				
+				case KeyEvent.VK_UP: k_cima = true; break;
+				case KeyEvent.VK_DOWN: k_baixo = true; break;
+				case KeyEvent.VK_LEFT: k_esquerda = true; break;
+				case KeyEvent.VK_RIGHT: k_direita = true; break;
+				
+				}
+			}
+		});
+		
 		bola = new Bola();
 		setFocusable(true); // Define o foco para o painel criado
 		setLayout(null); // Layout vazio, não será adicionado nenhum outro componente específico
-
-		new Thread(new Runnable() {
-
+		
+		new Thread(new Runnable() { // instancia da Thread + classe interna anonima
+		
 			@Override
 			public void run() {
-				gameLoop();
-
+				gameloop();
 			}
-		}).start();
+			
+		}).start(); // dispara a Thread
 	}
-
-	// Game loop
-	// *************************************************************************************
-
-	public void gameLoop() {
-
-		while (true) {
+	
+	
+	/// Game loop
+	// **************************************************************************************
+	public void gameloop() {
+		while(true) {
 			handlerEvents();
 			update();
 			render();
-
 			try {
-				Thread.sleep(17); // Para mover-se a 60fps
-			} catch (InterruptedException e) { // Gera exceção
-				Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, e);
+				Thread.sleep(17);
+			}catch (Exception e) {
+				e.printStackTrace();
+				
 			}
-
 		}
 	}
+	
 	// **************************************************************************************
-
 	public void handlerEvents() {
-
+		bola.setVelX(0);
+		bola.setVelY(0);
+		imgAtual = bola.getParada();
+		
+		if(k_cima) {
+			bola.setVelY(-3);
+			imgAtual = bola.getCima();
+			if(k_esquerda) {
+				bola.setVelX(-3);
+				imgAtual = bola.getEsquerda_cima();
+			}else if(k_direita) {
+				bola.setVelX(3);
+				imgAtual = bola.getDireita_cima();
+			}
+			
+		}else if(k_baixo) {
+			bola.setVelY(3);
+			imgAtual = bola.getBaixo();
+			if(k_esquerda) {
+				bola.setVelX(-3);
+				imgAtual = bola.getEsquerda_baixo();
+			}else if(k_direita) {
+				bola.setVelX(3);
+				imgAtual = bola.getDireita_baixo();
+			}
+			
+		}else if(k_esquerda) {
+			bola.setVelX(-3);
+			imgAtual = bola.getEsquerda();
+		}else if(k_direita){
+			bola.setVelX(3);
+			imgAtual = bola.getDireita();
+		}
 	}
-
+	
+	
 	public void update() {
-		testeColisoes();
-		// bola.velX += 1;
 		bola.setPosX(bola.getPosX() + bola.getVelX());
 		bola.setPosY(bola.getPosY() + bola.getVelY());
-
+		testeColisoes();
 	}
-
+	
+	
 	public void render() {
 		repaint();
-
 	}
-
+	
+	
 	// Outros métodos
-	// ******************************************************************************
-
+		// ******************************************************************************
 	public void testeColisoes() {
-		if (bola.getPosX() + (bola.getRaio() * 2) >= Principal.LARGURA_TELA || bola.getPosX() <= 0) {
-			bola.setVelX(bola.getVelX() * -1);
-
+		if(bola.getPosX() + (bola.getRaio()*2) >= Principal.LARGURA_TELA || bola.getPosX() <= 0){
+			bola.setPosX(bola.getPosX() - bola.getVelX());
 		}
-
-		if (bola.getPosY() + (bola.getRaio() * 2) >= Principal.ALTURA_TELA || bola.getPosY() <= 0) {
-			bola.setVelY(bola.getVelY() * -1);
+		
+		if(bola.getPosY() + (bola.getRaio()*2) >= Principal.ALTURA_TELA || bola.getPosY() <= 0) {
+			bola.setPosY(bola.getPosY() - bola.getVelY());
 		}
 	}
-
+		
+	
 	// Método sobrescrito
-	// *****************************************************************************
-
+		// *****************************************************************************
 	@Override
-	protected void paintComponent(Graphics g) { // Desenha os elementos gráficos na tela
-		super.paintComponent(g); // chama o metodo original da classe pai
+	protected void paintComponent(Graphics g) {
+		super.paintComponent(g);
 		setBackground(Color.LIGHT_GRAY);
-
-		g.drawImage(bola.obterImagem(), bola.getPosX(), bola.getPosY(), null);
-
-		/*
-		 * Graphics2D g2 = (Graphics2D) g; g2.setStroke(new BasicStroke(10));
-		 * 
-		 * g.setColor(Color.yellow); g.fillOval((Principal.LARGURA_TELA/2) - 50,
-		 * (Principal.ALTURA_TELA/2) - 50, 100, 100);
-		 * 
-		 * g.setColor(Color.red); g.drawLine(0, 0, Principal.LARGURA_TELA,
-		 * Principal.ALTURA_TELA); // define onde começa e termina
-		 * 
-		 * g.setColor(Color.blue); g.drawLine(0, Principal.ALTURA_TELA,
-		 * Principal.LARGURA_TELA, 0); // define onde começa e termina
-		 * 
-		 * g.setColor(Color.RED); g.fillOval(bola.posX, bola.posY, bola.raio * 2,
-		 * bola.raio*2); // Desenha a bola com Pos X, Y, altura e largura
-		 * 
-		 */
+		
+		g.setColor(Color.RED);
+		g.drawImage(imgAtual, bola.getPosX(), bola.getPosY(), null);
+		
 	}
-	// *********************************************************************************************
-
 }
