@@ -5,8 +5,7 @@ import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
 import javax.swing.JPanel;
 
-public class Game extends JPanel{
-	// Esta classe representará a tela, dentro da janela, onde o jogo ocorrerá. 
+public class Game extends JPanel{	
 	
 	private Bola bola;
 	private BufferedImage imgAtual;
@@ -45,22 +44,20 @@ public class Game extends JPanel{
 		});
 		
 		bola = new Bola();
-		setFocusable(true); // Define o foco para o painel criado
-		setLayout(null); // Layout vazio, não será adicionado nenhum outro componente específico
+		setFocusable(true); 
+		setLayout(null); 
 		
-		new Thread(new Runnable() { // instancia da Thread + classe interna anonima
+		new Thread(new Runnable() { 
 		
 			@Override
 			public void run() {
 				gameloop();
 			}
 			
-		}).start(); // dispara a Thread
+		}).start(); 
 	}
 	
 	
-	/// Game loop
-	// **************************************************************************************
 	public void gameloop() {
 		while(true) {
 			handlerEvents();
@@ -75,7 +72,6 @@ public class Game extends JPanel{
 		}
 	}
 	
-	// **************************************************************************************
 	public void handlerEvents() {
 		bola.setVelX(0);
 		bola.setVelY(0);
@@ -125,8 +121,6 @@ public class Game extends JPanel{
 	}
 	
 	
-	// Outros métodos
-		// ******************************************************************************
 	public void testeColisoes() {
 		if(bola.getPosX() + (bola.getRaio()*2) >= Principal.LARGURA_TELA || bola.getPosX() <= 0){
 			bola.setPosX(bola.getPosX() - bola.getVelX());
@@ -138,8 +132,6 @@ public class Game extends JPanel{
 	}
 		
 	
-	// Método sobrescrito
-		// *****************************************************************************
 	@Override
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
