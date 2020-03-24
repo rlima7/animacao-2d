@@ -31,7 +31,7 @@ public class Bola {
 		velY = 0;
 	}
 	
-	// Métodos acessores
+	// Getter Setter
 	// ***********************************************************************************************
 
 	public BufferedImage getCima() {
@@ -144,9 +144,7 @@ public class Bola {
 
 	public void setVelY(int velY) {
 		this.velY = velY;
-	}
-	
-	
+	}	
 	
 	
 }
