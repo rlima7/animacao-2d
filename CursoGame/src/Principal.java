@@ -6,16 +6,16 @@ public class Principal {
 	public static final int ALTURA_TELA = 480;
 	
 	public Principal() {
-		JFrame janela = new JFrame("Jogo2D"); // cria a janela
-		Game game = new Game(); // cria a tela do jogo
+		JFrame janela = new JFrame("Jogo2D");
+		Game game = new Game();
 		game.setPreferredSize(new Dimension(LARGURA_TELA, ALTURA_TELA));
 		
-		janela.getContentPane().add(game); // adiciona a tela do jogo na janela
-		//janela.setSize(LARGURA_TELA, ALTURA_TELA); // dimensões da janela
-		janela.setResizable(false); // impede redimensionamento
-		janela.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // modo de encerramento
-		janela.setLocation(100, 100); // posição da janela na tela
-		janela.setVisible(true); // torna a janela visível
+		janela.getContentPane().add(game);
+		//janela.setSize(LARGURA_TELA, ALTURA_TELA);
+		janela.setResizable(false); 
+		janela.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		janela.setLocation(100, 100);
+		janela.setVisible(true); 
 		janela.pack();
 		
 	}
